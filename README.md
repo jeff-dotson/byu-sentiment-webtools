@@ -30,5 +30,9 @@ This code is written in PHP & connects to a Mongo database. In addition to using
     # make a new mongo.ini file to load the extension
     cd /etc/php.d
     sudo vi mongo.ini
-    add the following text to this file --> extension=mongo.so
+    #add the following text to this file --> extension=mongo.so
+    
+    # restart apache
+    sudo /etc/init.d/httpd restart
+
     
