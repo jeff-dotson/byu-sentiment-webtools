@@ -106,6 +106,9 @@
 				$resall = array();
 				foreach($screen_name as $sn ){
 				
+					$sncount = $collection->count(array("entities.user_mentions" => array('$elemMatch' => array("screen_name" => $sn))));
+					if( $sncount == 0 ) continue;
+				
 					//Putting together the aggregate query
 					$match1 = array('$match' =>
 								array("entities.user_mentions" => array( 
