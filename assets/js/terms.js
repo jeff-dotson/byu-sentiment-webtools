@@ -43,7 +43,7 @@ function MainCtrl($scope, $http, $document, $modal, orderByFilter) {
 		
 		if( $scope.term.term == "" ){ alert("The term cannot be left blank"); }
 		
-		var payload = {"action":"deleteTerm","term":$scope.term};
+		var payload = {"action":"addTerm","term":$scope.term};
 		console.log("Adding Term",payload);		
 		
 		//Getting the active runs from the server

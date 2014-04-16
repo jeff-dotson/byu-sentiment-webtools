@@ -38,6 +38,7 @@
 	<li><a href="/">Sentiment Breakdown</a></li>
 	<li><a href="/date.php">Date Breakdown</a></li>
 	<li><a href="/terms.php">Add Terms</a></li>
+	<li><a href="/byhour.php">Chart</a></li>
 	
 	
 </ul>

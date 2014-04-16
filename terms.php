@@ -34,6 +34,7 @@
 	<script src="assets/js/terms.js"></script>
 	<style>
 		#addTable input{ width:100%; }
+		a{ cursor:pointer; }
 	</style>
 	<!-- InstanceEndEditable -->
   </head>

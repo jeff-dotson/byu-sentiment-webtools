@@ -41,7 +41,7 @@
 	} elseif( $request_body->action == "addTerm" && is_object($request_body->term) ){ 
 	 	
 		$terms = $db->searchTerms;
-		$termCursor = $terms->insert($request_body->term);
+		$termCursor = $terms->insert((array)$request_body->term);
 		
 		header('Content-type: application/json');
 		echo json_encode($request_body->term);
