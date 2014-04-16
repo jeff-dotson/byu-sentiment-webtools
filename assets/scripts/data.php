@@ -16,7 +16,7 @@
 	//	exit;
 	
 	//}else
-	if( $_GET["action"] == "byHourTest" ){
+	if( !empty($_GET["action"]) && $_GET["action"] == "byHourTest" ){
 		
 		$terms = $db->tweets;
 		$keyf = new MongoCode("function(doc) {
@@ -38,7 +38,7 @@
 		//echo json_encode($g);
 		exit;
 	
-	} elseif( $_GET["action"] == "byHour"){
+	} elseif( !empty($_GET["action"]) && $_GET["action"] == "byHour"){
 		// construct map and reduce functions
 		$map = new MongoCode("function Map() {
 		emit(
@@ -85,7 +85,7 @@
 		
 		//Send error headers and redirect
 		header('HTTP/1.0 404 Not Found');	
-		echo json_encode(array("Error" => "Wrong Parameters","requestBody"=> $request_body));
+		echo json_encode(array("Error" => "Wrong Parameters","requestBody"=> $request_body,"get"=>$_GET));
 		exit;
 		
 	}

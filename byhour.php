@@ -43,7 +43,7 @@
       
 	function drawChart() {
 		var jsonData = $.ajax({
-		url: "assets/scripts/data.php",
+		url: "assets/scripts/data.php?action=byHour",
 		dataType:"json",
 		async: false
 		}).responseText;
