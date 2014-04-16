@@ -54,7 +54,10 @@
 		//Creating date objects
 		for(var i in obj){
 			if( i == 0 ) continue;
-			obj[i] = [ new Date(obj[i][0]), obj[i][1] ];	
+			
+			var date = new Date(obj[i][0]);
+			date.setHours(date.getHours() - 6 );
+			obj[i] = [ date, obj[i][1] ];	
 		}
 		
 		// Create our data table out of JSON data loaded from server.
@@ -65,6 +68,7 @@
 		var options = {
 		title: 'Tweets Captured',
 		curveType: 'function',
+		'legend':'none'
 		};
 		
 		// Instantiate and draw our chart, passing in some options.
@@ -119,7 +123,7 @@
 		
 		<!-- It all starts here -->
 		<!-- InstanceBeginEditable name="EditRegionContainer" -->
-		<div id="chart_div" style="width: 900px; height: 500px;"></div>
+		<div id="chart_div" style="width: 100%; height: 700px;"></div>
 
 		<!-- /container -->
 	<!-- InstanceEndEditable -->
