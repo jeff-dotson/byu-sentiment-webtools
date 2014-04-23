@@ -66,9 +66,16 @@
 		//var data = new google.visualization.DataTable(mydata);
 		
 		var options = {
-		title: 'Tweets Captured',
-		curveType: 'function',
-		'legend':'none'
+			title: 'Tweets Captured (by Hour)',
+			curveType: 'function',
+			'legend':'none',
+			vAxis: { 
+				viewWindowMode:'explicit',
+				viewWindow: {
+					//max:100,
+					min:0
+				}
+		}
 		};
 		
 		// Instantiate and draw our chart, passing in some options.

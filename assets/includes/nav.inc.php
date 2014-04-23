@@ -35,8 +35,8 @@
 	</li>
 	-->
 	
-	<li><a href="/">Sentiment Breakdown</a></li>
-	<li><a href="/date.php">Date Breakdown</a></li>
+	<li><a href="/">Data Summary</a></li>
+	<li><a href="/sentiment-by-term.php">Sentiment By Term</a></li>
 	<li><a href="/terms.php">Add Terms</a></li>
 	<li><a href="/byhour.php">Chart</a></li>
 	

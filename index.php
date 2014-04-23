@@ -12,7 +12,7 @@
 	
   <link rel="shortcut icon" href="bootstrap/assets/ico/favicon.png">
   <!-- InstanceBeginEditable name="doctitle" -->
-  <title>BYU Analytics | Home</title>
+  <title>Date Breakdown | BYU Analytics</title>
   <!-- InstanceEndEditable -->
   <!-- Bootstrap core CSS -->
     <link href="bootstrap/dist/css/bootstrap.css" rel="stylesheet">
@@ -89,106 +89,98 @@
 						
 			<?
 				//Some initial setup
-				$collection = $db->tweets;
-				$count = $collection->count(array("lang" => "en"));
+				$colTweets = $db->tweets;
+				$colTerms = $db->searchTerms;
 				
-				//Getting all the screennames
-				$terms = $db->searchTerms;
-				$termCursor = $terms->find(array("type" => "user"));
-				$screen_name = array();
-				foreach($termCursor as $row){
-					$screen_name[] = $row["screen_name"];
-				}
-				//print_r($screen_name);
-				//$screen_name = array("Delta","united","JetBlue","SouthwestAir","VirginAmerica","AlaskaAir","AirAsia", "BritishAirways", "flyPAL", "KLM", "TAMAirlines","AmericanAir");
+				$countTweets = $colTweets->count();
+				$countTerms = $colTerms->count();
 				
-				$results = array();
-				$resall = array();
-				foreach($screen_name as $sn ){
+				//Getting the count of tweets collected in the last 3 hours
+				$date = new Mongodate(time() - 3*60*60);
+				$query = array("date" => array('$gt' => $date) );
+				$last3hours = $colTweets->count($query);
 				
-					$sncount = $collection->count(array("entities.user_mentions" => array('$elemMatch' => array("screen_name" => $sn))));
-					if( $sncount == 0 ) continue;
+				//Getting the count of tweets collected in the last 3 days
+				$date = new Mongodate(time() - 60*60*24*3);
+				$query = array("date" => array('$gt' => $date) );
+				$last3days = $colTweets->count($query);
 				
-					//Putting together the aggregate query
-					$match1 = array('$match' =>
-								array("entities.user_mentions" => array( 
-									'$elemMatch' => array("screen_name" => $sn)
-							))
-						);
-					$match2 = array( '$match' => array('lang' => "en" ) );
-					$group = array(
-						'$group' => array(
-							"_id" => NULL,
-							"avgSentiment" => array('$avg' => '$sentiment'),
-							"numRows" => array('$sum'=>1)
-						)
-					);
+				//Getting the count of tweets collected in the last 3 minutes
+				$date = new Mongodate(time() - 3*60);
+				$query = array("date" => array('$gt' => $date) );
+				$last3minutes = $colTweets->count($query);
 				
-					//Running the query
-					$aggregate = array($match1,$match2,$group);			
-					$cursor = $collection->aggregate($aggregate);
-					
-					//echo json_encode($aggregate);
-					//exit;
-					
-					//Outputting Results
-					//echo "<tr>\n<td>$sn</td>\n";
-					
-					//if( empty($doc[0]) ) continue;
-					
-					foreach($cursor as $doc){
-						//echo $sn;
-						//print_r($doc);
-						@$row  = array(
-							"name" => $sn,
-							"rows" =>$doc[0]['numRows'],
-							"avg" => round($doc[0]['avgSentiment'],3)					
-						);
-						@$results[(string)round($doc[0]['avgSentiment'],3)] = $row;
-						
-						//print_r($doc);
-						
-						//echo "<td>".$doc[0]['numRows']."</td>\n";
-						//echo "<td>".round($doc[0]['avgSentiment'],2)."</td>\n";
-						break;
-		
-						//echo $doc["_id"] . "</br>";	
-						//if( $i++ == 10) break;
-					}
-					//echo "</tr>\n";
+				//Getting the count of tweets collected in the last 3 weeks
+				$date = new Mongodate(time() - 3*60*60*24*7);
+				$query = array("date" => array('$gt' => $date) );
+				$last3weeks = $colTweets->count($query);
 				
-				}
+				//Getting the count of tweets collected in the last 3 months
+				$date = new Mongodate(time() - 3*60*60*24*7*30);
+				$query = array("date" => array('$gt' => $date) );
+				$last3months = $colTweets->count($query);
 				
-				//array_multisort($results,SORT_NUMERIC,
-				//print_r($results);
-				krsort($results);
-				//print_r($results);
-				$overallAvgSentiment = 0;
-				foreach($results as $r){
-					$overallAvgSentiment += (float)$r['avg'];	
-				}
-				$overallAvgSentiment = $overallAvgSentiment/count($results);
+				//Getting the database storage
+				//$stats = $colTweets->stats(1024*1024);
+				$stats = $db->command(array('dbStats' => 1));
+				$size = $stats["dataSize"];
+				$storageSize = (float)$stats["storageSize"] / (1024 * 1024); 
+				$fileSize = (float)$stats["fileSize"] / (1024 * 1024);
+				$dataSize = (float)$stats["dataSize"]/ (1024 * 1024);
+				
+				//$storageSize = $stats["storageSize"];
+				
 				
 				
 			?>
 			
-			<h2 style="margin: 10px auto 15px auto; width:400px; text-align:center;">Airline Sentiment Analysis</h2>
-			
-			<div style="text-align:center; margin:0 0 10px 0; "><?= $count ?> english tweets @ <?= round($overallAvgSentiment,3) ?></div>
-			<table class="table table-bordered" style="width:400px; margin:auto;" >
+			<h2 style="margin: 10px auto 15px auto; width:400px; text-align:center;">Tweet Statistics</h2>
+			<table class="table table-bordered" style="width:400px; margin:auto; text-align:right;" >
 				<tr>
-					<th>#</th>
-					<th>Airline</th>
-					<th># Tweets</th>
-					<th>Avg. Sentiment</th>
+					<th>Metic</th>
+					<th>Value</th>
+
 				</tr>
-				<?
-					$i = 0;
-					foreach($results as $r){
-						$i++;
-						echo "<tr><td>$i</td><td><a href='http://twitter.com/{$r['name']}'>{$r['name']}</a></td><td>{$r['rows']}</td><td>{$r['avg']}</td></tr>\n";
-					}
-				?>
+				<tr>
+					<td>Tweets collected in the last 3 <strong>minutes</strong></td>
+					<td><?= number_format($last3minutes) ?></td>
+				</tr>
+				<tr>
+					<td>Tweets collected in the last 3 <strong>hours</strong></td>
+					<td><?= number_format($last3hours) ?></td>
+				</tr>
+				<tr>
+					<td>Tweets collected in the last 3 <strong>days</strong></td>
+					<td><?= number_format($last3days) ?></td>
+				</tr> 
+				<tr>
+					<td>Tweets collected in the last 3 <strong>weeks</strong></td>
+					<td><?= number_format($last3weeks) ?></td>
+				</tr>
+				<tr>
+					<td>Tweets collected in the last 3 <strong>months</strong></td>
+					<td><?= number_format($last3months) ?></td>
+				</tr>
+				<tr>
+					<td>Tweets collected Total</td>
+					<td><?= number_format($countTweets) ?></td>
+				</tr>
+				<tr>
+					<td>Search Terms Total</td>
+					<td><?= number_format($countTerms) ?></td>
+				</tr>
+				<tr>
+					<td>dataSize <br>(filesize of data in database)</td>
+					<td><?= number_format($dataSize) ?> <br>MB</td>
+				</tr>
+				<tr>
+					<td>fileSize <br>(filesize of all data files that hold the database)</td>
+					<td><?= number_format($fileSize) ?> <br>MB</td>
+				</tr>
+				<tr>
+					<td>storageSize <br>(The total amount of space in bytes allocated to collections in this database for document storage)</td>
+					<td><?= number_format($storageSize) ?> <br>MB</td>
+				</tr>
 			</table>
 			<div style="text-align:center; margin:10px 0 10px 0; "><i>Retrieved <?= date("Y-m-d h:i:s",time()) ?></i></div>
 			
