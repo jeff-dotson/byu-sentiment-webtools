@@ -24,6 +24,9 @@ This code is written in PHP & connects to a Mongo database. In addition to using
     #install a compiler
     sudo yum install gcc
     
+    #install php-devel
+    sudo yum install php-devel
+    
     #download and compile the mongo driver
     sudo pecl install mongo
     
