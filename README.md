@@ -19,7 +19,7 @@ To update this code on the server
 
 ## Composition
 
-## Setup
+### Setup
 
 ## Install Web Server
 
