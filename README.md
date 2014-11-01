@@ -19,9 +19,11 @@ To update this code on the server
 
 ## Composition
 
-### Setup
+## Setup
 
-## Install Web Server
+    Follow the below steps to get the webserver setup
+
+### Install Web Server
 
     sudo yum update -y
     sudo yum groupinstall -y "Web Server" "MySQL Database" "PHP Support"
@@ -29,11 +31,11 @@ To update this code on the server
     sudo service httpd start
     # Update the document root to /var/www/byu-sentiment-webtools... you could use a symbolic link
     
-## Configure PHP to use short tags
+### Configure PHP to use short tags
 
     Open the php.ini file and turn Short_tags ON
 
-## Install PHP Mongo Driver
+### Install PHP Mongo Driver
 
 This code is written in PHP & connects to a Mongo database. In addition to using a standard LAMP server, you'll need to install the MongoDB driver for PHP, which can be a little tricky. This may be different depending on your specific server instance, but I installed it using the following commands:
 
